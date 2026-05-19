@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# PetalCat pre-commit secret scanner
+# Install: cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# Or use `pre-commit` framework with the config in .pre-commit-config.yaml
+
+set -euo pipefail
+
+RED='\033[0;31m'; YELLOW='\033[1;33m'; NC='\033[0m'
+
+PATTERNS=(
+  '10\.10\.10\.[0-9]+'          # internal LAN IPs
+  '@[a-zA-Z0-9._-]+:mx\.petalcat\.dev'  # internal Matrix MXIDs
+  '/home/docker/'                # internal host path
+  '/Users/parker/'               # personal dev path
+  'pinch_[a-f0-9]{32}'          # pinch nodeAuthToken
+  'syt_[A-Za-z0-9_-]{10,}'      # Synapse admin token
+  'sk-ant-[A-Za-z0-9_-]+'       # Anthropic API key
+  'ghp_[A-Za-z0-9_-]+'          # GitHub personal token
+)
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$STAGED" ] && exit 0
+
+FOUND=0
+for pattern in "${PATTERNS[@]}"; do
+  hits=$(git diff --cached -U0 | grep '^\+' | grep -vE '^\+\+\+' | grep -E "$pattern" || true)
+  if [ -n "$hits" ]; then
+    echo -e "${RED}[secret-scan] Blocked: pattern '${pattern}' found in staged changes:${NC}"
+    echo "$hits" | head -5 | while IFS= read -r line; do
+      echo -e "  ${YELLOW}${line}${NC}"
+    done
+    FOUND=1
+  fi
+done
+
+if [ "$FOUND" -eq 1 ]; then
+  echo -e "${RED}[secret-scan] Commit blocked. Remove sensitive strings before committing.${NC}"
+  echo "  Run: git diff --cached | grep -E '<pattern>' to find them."
+  exit 1
+fi
+
+exit 0

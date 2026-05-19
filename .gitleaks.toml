@@ -1,0 +1,60 @@
+# gitleaks config — PetalNet shared secret scan
+# Used by CI and pre-commit hooks across all org repos.
+# Extend this file when new internal patterns are identified.
+
+title = "PetalNet Secret Scanner"
+
+[extend]
+# Extend the default ruleset (catches common tokens: ghp_, sk-ant-, syt_, etc.)
+useDefault = true
+
+[[rules]]
+id = "internal-lan-ip"
+description = "Internal LAN IP address (10.10.10.x subnet)"
+regex = '''\b10\.10\.10\.\d{1,3}\b'''
+tags = ["internal", "network"]
+
+[[rules]]
+id = "matrix-homeserver-mxid"
+description = "Matrix MXID on internal homeserver"
+regex = '''@[a-zA-Z0-9._-]+:mx\.petalcat\.dev'''
+tags = ["internal", "matrix"]
+
+[[rules]]
+id = "internal-docker-path"
+description = "Absolute path rooted at /home/docker (internal host user)"
+regex = '''/home/docker/'''
+tags = ["internal", "path"]
+
+[[rules]]
+id = "internal-user-path"
+description = "Absolute path rooted at /Users/parker"
+regex = '''/Users/parker/'''
+tags = ["internal", "path"]
+
+[[rules]]
+id = "pinch-auth-token"
+description = "Pinch nodeAuthToken (pinch_ prefix + 32 hex chars)"
+regex = '''pinch_[a-f0-9]{32}'''
+tags = ["secret", "pinch"]
+
+[[rules]]
+id = "synapse-admin-token"
+description = "Synapse admin access token (syt_ prefix)"
+regex = '''syt_[A-Za-z0-9_-]{10,}'''
+tags = ["secret", "matrix"]
+
+[allowlist]
+# Paths to skip entirely — scanner config and hook files contain pattern strings
+# by design and must not be flagged as leaks.
+paths = [
+  '''.gitleaks.toml''',
+  '''.gitleaks-petalnet.toml''',
+  '''hooks/pre-commit''',
+  '''.pre-commit-config.yaml''',
+  '''README\.md''',
+  '''(.*)?_test\.go''',
+  '''(.*)?\bfixtures?\b(.*)''',
+]
+
+commits = []
