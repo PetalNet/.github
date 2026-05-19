@@ -33,6 +33,26 @@ regex = '''/Users/parker/'''
 tags = ["internal", "path"]
 
 [[rules]]
+id = "mac-username-hasenkap-path"
+description = "Mac home directory rooted at /Users/hasenkap (old mac username)"
+regex = '''/Users/hasenkap/'''
+tags = ["internal", "path"]
+
+[[rules]]
+id = "env-template-literal-ipv4"
+description = "Real IPv4 literal as an env-var value in a .env.example or template file"
+regex = '''(?i)^[A-Z][A-Z0-9_]*\s*=\s*(?:https?://)?(?:[a-z0-9.-]+@)?\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}\b'''
+path = '''\.env\.(example|sample|template|dist|defaults)$'''
+tags = ["template", "network"]
+
+[[rules]]
+id = "env-template-real-username"
+description = "Short lowercase username hardcoded as USER/NAME env-var value in a .env template (likely a real handle)"
+regex = '''(?i)^[A-Z][A-Z0-9_]*(USER(NAME)?|ACCOUNT|LOGIN|HANDLE|OWNER)\s*=\s*[a-z][a-z0-9_-]{2,18}$'''
+path = '''\.env\.(example|sample|template|dist|defaults)$'''
+tags = ["template", "identity"]
+
+[[rules]]
 id = "pinch-auth-token"
 description = "Pinch nodeAuthToken (pinch_ prefix + 32 hex chars)"
 regex = '''pinch_[a-f0-9]{32}'''
