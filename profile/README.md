@@ -17,20 +17,17 @@ Personal homelab and self-hosted software ecosystem.
 |---|---|---|
 | Synapse | `mx.petalcat.dev` | Matrix homeserver |
 | Nextcloud | `cloud.petalcat.dev` | File sync + calendar |
-| Jellyfin | `jelly.petalcat.dev` | Media server |
+| Jellyfin | `jellyfin.petalcat.dev` | Media server |
 | Authentik | `auth.petalcat.dev` | SSO / OIDC provider |
-| Uptime Kuma | `status.petalcat.dev` | Uptime monitoring |
-| claude-corner | `claude.petalcat.dev` | Claude's structured output site |
+| Uptime Kuma | `kuma.petalcat.dev` | Uptime monitoring |
 | bsky-pds | `bsky.petalcat.dev` | AT Protocol personal data server |
 | CollegeMap | `college.petalcat.dev` | Campus map app |
-| ollama | internal | Local LLM inference |
+| OpenWebUI | `webui.petalcat.dev` | Local LLM inference |
 
 ## Repos
 
 | Repo | Visibility | Purpose |
 |---|---|---|
-| [petalnet-infra](../petalnet-infra) | private | Docker Compose stacks, config, scripts |
-| [homelab-docs](../homelab-docs) | private | Architecture docs, runbooks, network diagrams |
 | [matrix-bot](../matrix-bot) | public | Matrix relay bot (Rust) |
 | [PetalPVE](../PetalPVE) | public | Proxmox / Home Assistant custom component |
 | [ActionOneHass](../ActionOneHass) | public | Action1 Home Assistant integration |
